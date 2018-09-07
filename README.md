@@ -116,6 +116,9 @@
 
         mysql> show keys from tbname;
     </p>  
+    eg: 
+    
+    ![](1.png)
 
     -  Table
 
