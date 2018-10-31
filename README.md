@@ -215,33 +215,32 @@
 <table>  
     <tr>  
         <th><td bgcolor= BlueViolet><font size=4 color= Black><b>隔离级别</b></font></td>  
-        <th><td bgcolor= BlueViolet><font size=4 color= Black><b>脏读</b></font></td></th>  
-        <th><td bgcolor= BlueViolet><font size=4 color= Black><b>非重复读</b></font></td></th>
-        <th><td bgcolor= BlueViolet><font size=4 color= Black><b>幻读</b></font></td></th>  
+        <td bgcolor= BlueViolet><font size=4 color= Black><b>脏读</b></font></td> 
+        <td bgcolor= BlueViolet><font size=4 color= Black><b>非重复读</b></font></td>
+        <td bgcolor= BlueViolet><font size=4 color= Black><b>幻读</b></font></td></th>  
     </tr>    
     <tr>  
-        <th><td bgcolor= BlueViolet>readuncommited</td></th>   
-        <th><td bgcolor= BlueViolet>允许</td></th>  
-        <th><td bgcolor= BlueViolet>允许</td></th>
-        <th><td bgcolor= BlueViolet>允许</td></th>  
+        <th><td bgcolor= BlueViolet>readuncommited</td>  
+        <td bgcolor= BlueViolet>允许</td> 
+        <td bgcolor= BlueViolet>允许</td>
+        <td bgcolor= BlueViolet>允许</td></th>  
     </tr>
     <tr>  
-        <th><td bgcolor= BlueViolet>read commited</td></th>    
-        <th><td bgcolor= BlueViolet></td></th>  
-        <th><td bgcolor= BlueViolet>允许</td></th>
-        <th><td bgcolor= BlueViolet>允许</td></th>  
+        <th><td bgcolor= BlueViolet>read commited</td>   
+        <td bgcolor= BlueViolet></td>  
+        <td bgcolor= BlueViolet>允许</td>
+        <td bgcolor= BlueViolet>允许</td></th>  
     </tr> 
     <tr>  
-        <th><td bgcolor= BlueViolet>repeatable read</td></th>    
-        <th><td bgcolor= BlueViolet></td></th>  
-        <th><td bgcolor= BlueViolet></td></th>
-        <th><td bgcolor= BlueViolet>允许</td></th>  
+        <th><td bgcolor= BlueViolet>repeatable read</td> 
+        <td bgcolor= BlueViolet></td> 
+        <td bgcolor= BlueViolet></td>
+        <td bgcolor= BlueViolet>允许</td></th>  
     </tr>     
     <tr>  
-        <th><td bgcolor= BlueViolet>serializable</td></th>    
-        <th><td bgcolor= BlueViolet></td></th>  
-        <th><td bgcolor= BlueViolet></td></th>
-        <th><td bgcolor= BlueViolet></td></th>  
+        <th><td bgcolor= BlueViolet>serializable</td><td bgcolor= BlueViolet></td>  
+        <td bgcolor= BlueViolet></td>
+        <td bgcolor= BlueViolet></td></th>  
     </tr>   
 </table>
 
