@@ -15,7 +15,8 @@
 ## 4.持久性
 
  *  一个事物一旦提交，数据库中的数据改变是永久性的。
-
+# 数据库连接池
+- 数据库连接池负责分配、管理和释放数据库连接。他运行应用程序重复使用一个现有的连接。而不是重新再建立一个。释放空闲时间超过最大空闲时间的数据库连接来避免因为没有释放数据库连接而引起的数据库连接泄露。
  # 数据库索引
 
  - 1．索引作用
@@ -125,7 +126,7 @@
          表的名称。
 
     - Non_unique
-
+    
          如果索引不能包括重复词，则为0。如果可以，则为1。
 
     - Key_name
@@ -163,5 +164,120 @@
     - Index_type
 
       用过的索引方法（BTREE, FULLTEXT, HASH, RTREE）。
+
+# 搜索引擎
+
+-  Mysql中 MyISAM和InnoDB 的区别
+    
+    - InnoDB支持事务，MyISAM不支持。对于InnoDB每一条sql语言都默认封装成事物，这样会影响速度。所以最好把多条sql语言放在begin和commit之间，组成一个事物。
+    - InnoDB支持外键，MyISAM不支持。对于包含InnoDB的表转为MyISAM会失败
+    - InnoDB是聚集索引,数据文件和索引绑在一起的。必须要有主键，主键效率很高。但是辅助索引需要查询两次，先查询到主键,再通过主键查询到
+    据文件分离的。索引保存的是数据文件的指针.主索引和辅助索引独立。
+    - InnoDB不保存表的具体行,执行select count(*)from table需要全表扫描。而MyISAM用一个变量保存了具体行数。执行sql时只要读出该变量即可,速度很快。
+    - InnoDB不支持全文索引,而MyISAM支持全文索引,查询效率上MyISAM要高。
+
+- 如何选择MyISAM和InnoDB
+
+    - 是否要支持事物，如果要选InnoDB,不需要的话考虑MyISAM
+    - 如果绝大多数是只读查询,考虑MyISAM.读写频繁使用InnoDB
+    - 系统奔溃后，MyISAM恢复起来更困难，能否接受；
+
+    - MySQL5.5版本开始Innodb已经成为Mysql的默认引擎(之前是MyISAM)，说明其优势是有目共睹的，如果你不知道用什么，那就用InnoDB，至少不会差。
+# 隔离级别
+- sql四个隔离级别:
+    
+    - read uncommited :读到未提交的数据
+
+        - 该隔离级别，所有事物都可以看到其他未提交事物的执行结果。很少用，也称为脏读。
+
+    - read commited :读取提交内容
+
+        - 一个事物只能看见已经提交事物做出的改变.
+
+    - repeatable read :可重复读
+        
+        - mysql默认级别。确保同一事物的多个实例在并发读取数据时,会看到同样的数据行.可能会导致幻读。幻读是指当用户读取某一范围的数据行时,另一事物又在该范围内插入了新行。当用户再读取数据行时会发现新的幻影行.InnoDB存储引擎通过并发控制即间隙锁解决了这个问题。
+
+
+    - serializable:串行事物
+        
+        - 隔离最高级别。通过强制事物排序,使之不可能相互冲突,解决幻读问题。他是在每个数据行上加上共享锁。这个级别可能导致大量的超时和锁竞争。
+
+- 隔离级别现象:
+
+    - 脏读：
+
+        一个事物可以读取另一个未提交事物的修改数据。
+    - 非重复读：
+        同一个事物中，同一查询在T1时间读取某一行，T2时间重新读取这一行数据已经发生修改,可能被更新了，也可能被删除了。
+    - 幻象读：同一个事物中，同一查询多次的时候.由于其他插入操作事物的提交.不同隔离级别有不同的现象。隔离级别越高并发性越差
+
+<table>  
+    <tr>  
+        <th><td bgcolor= BlueViolet><font size=4 color= Black><b>隔离级别</b></font></td>  
+        <th><td bgcolor= BlueViolet><font size=4 color= Black><b>脏读</b></font></td></th>  
+        <th><td bgcolor= BlueViolet><font size=4 color= Black><b>非重复读</b></font></td></th>
+        <th><td bgcolor= BlueViolet><font size=4 color= Black><b>幻读</b></font></td></th>  
+    </tr>    
+    <tr>  
+        <th><td bgcolor= BlueViolet>readuncommited</td></th>   
+        <th><td bgcolor= BlueViolet>允许</td></th>  
+        <th><td bgcolor= BlueViolet>允许</td></th>
+        <th><td bgcolor= BlueViolet>允许</td></th>  
+    </tr>
+    <tr>  
+        <th><td bgcolor= BlueViolet>read commited</td></th>    
+        <th><td bgcolor= BlueViolet></td></th>  
+        <th><td bgcolor= BlueViolet>允许</td></th>
+        <th><td bgcolor= BlueViolet>允许</td></th>  
+    </tr> 
+    <tr>  
+        <th><td bgcolor= BlueViolet>repeatable read</td></th>    
+        <th><td bgcolor= BlueViolet></td></th>  
+        <th><td bgcolor= BlueViolet></td></th>
+        <th><td bgcolor= BlueViolet>允许</td></th>  
+    </tr>     
+    <tr>  
+        <th><td bgcolor= BlueViolet>serializable</td></th>    
+        <th><td bgcolor= BlueViolet></td></th>  
+        <th><td bgcolor= BlueViolet></td></th>
+        <th><td bgcolor= BlueViolet></td></th>  
+    </tr>   
+</table>
+
+# 乐观锁和悲观锁
+
+## 乐观锁
+    
+- 总是假设最好的情况，每次去拿数据的时候都认为别人不会修改，所以不会上锁，但是在更新的时候会判断一下在此期间别人有没有去更新这个数据，可以使用版本号机制和CAS算法实现。乐观锁适用于多读的应用类型，这样可以提高吞吐量.
+
+## 悲观锁
+
+- 总是假设最坏的情况，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会阻塞直到它拿到锁（共享资源每次只给一个线程使用，其它线程阻塞，用完后再把资源转让给其它线程）。传统的关系型数据库里边就用到了很多这种锁机制，比如行锁，表锁等，读锁，写锁等，都是在做操作之前先上锁。
+
+    - 在一般查询sql中，是这样的写查询：
+
+    - 1.select * from table where id=1;
+    此时并没有提交该事务1
+
+
+    这样做是无法起到上锁的目的，也就是说其他事务中可能有
+
+    - 2.update table set name='wind' where id=1;
+
+    事务2如上文修改了数据，并commit 
+    此时事务1执行下一句
+
+    - 3.select * from table where id=1;
+
+    发现会发现name字段2次结果不一致，这就是数据库事务并发时可能发生的不可重复读情况
+
+    解决方法是
+
+    select * from table where id=1 LOCK IN SHARE MODE;
+
+- *注：共享锁（S）：允许一个事务去读一行，阻止其他事务获得相同数据集的排他锁。 
+排他锁（X)：允许获得排他锁的事务更新数据，阻止其他事务取得相同数据集的共享读锁和排他写锁。*
+
 
 
